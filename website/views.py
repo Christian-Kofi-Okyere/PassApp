@@ -1,15 +1,21 @@
 import os
 import re
-import openai
+# import openai
 from flask import Blueprint, render_template, request, jsonify
 from dotenv import load_dotenv
+import google.generativeai as genai
 
 load_dotenv() # Load environment variables from .env file
 
 views = Blueprint("views", __name__)
 
 # Load OpenAI API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = os.getenv("OPENAI_API_KEY")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+models = genai.list_models()
+for model in models:
+    print(model.name)
 
 def evaluate_password_strength(password):
     """Basic password strength analysis."""
@@ -39,23 +45,10 @@ def evaluate_password_strength(password):
     return {"password": password, "strength": rating, "criteria": strength}
 
 def generate_password_advice(password):
-    """Use GPT-4 to provide personalized password security advice."""
-    prompt = f"""
-    The user entered the password: "{password}"
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(f"How secure is this password: {password}?")
     
-    Analyze its security risks and provide recommendations. 
-    Suggest improvements if necessary. 
-    Avoid disclosing the actual password in responses. 
-    Ensure the advice is user-friendly and follows cybersecurity best practices.
-    """
-
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are a cybersecurity expert providing password security advice."},
-                  {"role": "user", "content": prompt}]
-    )
-
-    return response["choices"][0]["message"]["content"]
+    return response.text  # Return Gemini's response
 
 @views.route("/")
 def home():
