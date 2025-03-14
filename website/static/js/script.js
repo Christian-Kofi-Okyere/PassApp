@@ -17,6 +17,7 @@ document.getElementById("checkBtn").addEventListener("click", function() {
              Lowercase: ${data.criteria.lowercase ? "✅" : "❌"} |
              Digits: ${data.criteria.digits ? "✅" : "❌"} |
              Special Chars: ${data.criteria.special_chars ? "✅" : "❌"}`;
+        document.getElementById("ai-advice").innerHTML = `<strong>AI Advice:</strong> ${data.advice}`;
     })
     .catch(error => console.error("Error:", error));
 });
