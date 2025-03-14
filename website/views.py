@@ -45,10 +45,14 @@ def evaluate_password_strength(password):
     return {"password": password, "strength": rating, "criteria": strength}
 
 def generate_password_advice(password):
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(f"How secure is this password: {password}?")
-    
-    return response.text  # Return Gemini's response
+    """Use Google Gemini API to provide password security advice."""
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(f"How secure is this password: {password}?")
+        return response.text  # Return Gemini's response
+
+    except Exception as e:
+        return f"AI Error: {str(e)}"  # Return a user-friendly error message
 
 @views.route("/")
 def home():
