@@ -1,5 +1,14 @@
+"""Unit tests for password strength evaluation in website.views."""
+
+import os
+import sys
 import pytest
 from website.views import evaluate_password_strength
+# Ensure the website package is discoverable before imports from 'website'.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+
+
 
 @pytest.mark.parametrize("password, expected_strength", [
     ("12345", "Weak"),

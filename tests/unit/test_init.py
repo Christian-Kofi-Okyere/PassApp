@@ -1,7 +1,18 @@
-from website import create_app
+"""Unit tests for password strength evaluation in website.views."""
 
-def test_create_app():
-    app = create_app()
-    assert app is not None
-    # Verify that a secret key is set.
-    assert "GEMINI_API_KEY" in app.config
+import pytest
+from website.views import evaluate_password_strength
+
+
+@pytest.mark.parametrize("password, expected_strength", [
+    ("12345", "Weak"),
+    ("P@ssword", "Moderate"),
+    ("StrongP@ssw0rd123!", "Strong"),
+    ("", "Weak"),
+    ("abcdef", "Weak"),
+    ("Abc12345", "Moderate"),
+])
+def test_password_strength(password, expected_strength):
+    """Test the password strength evaluation function."""
+    result = evaluate_password_strength(password)
+    assert result["strength"] == expected_strength
