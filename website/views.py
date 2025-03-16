@@ -13,9 +13,9 @@ views = Blueprint("views", __name__)
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-models = genai.list_models()
-for model in models:
-    print(model.name)
+# models = genai.list_models()
+# for model in models:
+#     print(model.name)
 
 def evaluate_password_strength(password):
     """Basic password strength analysis."""
