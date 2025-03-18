@@ -13,10 +13,10 @@ def create_app():
     load_dotenv()
 
     # Set configuration from environment variables.
-    app.config["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
     # Debug: Print the loaded GEMINI_API_KEY.
-    print("Loaded GEMINI_API_KEY:", app.config["GEMINI_API_KEY"])
+    print("Loaded GEMINI_API_KEY:", app.config["SECRET_KEY"])
 
     # Import views inside the function to avoid circular imports.
     from .views import views  # pylint: disable=import-outside-toplevel
