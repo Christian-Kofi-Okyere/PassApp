@@ -8,8 +8,6 @@ from website.views import evaluate_password_strength
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 
-
-
 @pytest.mark.parametrize("password, expected_strength", [
     ("12345", "Weak"),
     ("P@ssword", "Moderate"),

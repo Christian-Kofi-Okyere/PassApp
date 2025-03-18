@@ -3,7 +3,14 @@ body {
     text-align: center;
     padding: 50px;
     background-color: #d8cccc;
-}
+  }
+  h1, h2 {
+    color: #343a40;
+  }
+  #result p {
+    margin: 0.5em 0;
+  }
+ 
 #password {
     padding: 10px;
     width: 250px;
@@ -19,4 +26,4 @@ body {
     margin-top: 20px;
     font-size: 18px;
     font-weight: bold;
-}
+}  

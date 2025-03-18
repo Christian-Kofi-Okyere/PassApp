@@ -1,8 +1,8 @@
-"""Module for handling password evaluation and password advice generation
-using Google Gemini API."""
-
+"""Module for handling password evaluation, advice generation, and secure password generation using Google Gemini API."""
 import os
 import re
+import secrets
+import string
 from flask import Blueprint, render_template, request, jsonify
 from dotenv import load_dotenv
 import google.generativeai as genai  # pylint: disable=import-error
@@ -16,46 +16,58 @@ views = Blueprint("views", __name__)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def evaluate_password_strength(password):
-    """Perform basic password strength analysis."""
+    """Perform enhanced password strength analysis."""
     strength = {
-        "length": False,
-        "uppercase": False,
-        "lowercase": False,
-        "digits": False,
-        "special_chars": False
+        "length": len(password) >= 8,
+        "uppercase": bool(re.search(r'[A-Z]', password)),
+        "lowercase": bool(re.search(r'[a-z]', password)),
+        "digits": bool(re.search(r'\d', password)),
+        "special_chars": bool(re.search(r'[@$!%*?&]', password))
     }
 
-    if len(password) >= 8:
-        strength["length"] = True
-    if re.search(r'[A-Z]', password):
-        strength["uppercase"] = True
-    if re.search(r'[a-z]', password):
-        strength["lowercase"] = True
-    if re.search(r'\d', password):
-        strength["digits"] = True
-    if re.search(r'[@$!%*?&]', password):
-        strength["special_chars"] = True
+    # Check against a small list of common passwords
+    common_passwords = {"password", "123456", "12345678", "qwerty", "abc123"}
+    is_common = password.lower() in common_passwords
 
-    score = sum(strength.values())
+    score = sum(strength.values()) - (1 if is_common else 0)
 
-    if score == 5:
+    if is_common:
+        rating = "Very Weak"
+    elif score == 5:
         rating = "Strong"
     elif score >= 3:
         rating = "Moderate"
     else:
         rating = "Weak"
 
-    return {"password": password, "strength": rating, "criteria": strength}
+    return {"password": password, "strength": rating, "criteria": strength, "is_common": is_common}
 
 def generate_password_advice(password):
     """Use Google Gemini API to provide password security advice for the given password."""
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(f"How secure is this password: {password}?")
+        response = model.generate_content(
+            f"Analyze the security of this password: {password} and provide advice on how to improve it."
+        )
         return response.text  # Return Gemini's response
-
     except Exception as e:  # pylint: disable=broad-exception-caught
         return f"AI Error: {str(e)}"  # Return a user-friendly error message
+
+def generate_random_password(length=12):
+    """Generate a secure random password with letters, digits, and punctuation."""
+    characters = string.ascii_letters + string.digits + "@$!%*?&"
+    # Ensure the password meets criteria by including at least one of each required category
+    password = [
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.digits),
+        secrets.choice("@$!%*?&")
+    ]
+    if length < 4:
+        length = 4
+    password += [secrets.choice(characters) for _ in range(length - 4)]
+    secrets.SystemRandom().shuffle(password)
+    return "".join(password)
 
 @views.route("/")
 def home():
@@ -77,5 +89,13 @@ def check_password():
     return jsonify({
         "strength": strength_result["strength"],
         "criteria": strength_result["criteria"],
+        "is_common": strength_result["is_common"],
         "advice": ai_advice
     })
+
+@views.route("/generate_password", methods=["GET"])
+def get_generated_password():
+    """Endpoint to generate a secure random password."""
+    length = request.args.get("length", 12, type=int)
+    new_password = generate_random_password(length)
+    return jsonify({"generated_password": new_password})

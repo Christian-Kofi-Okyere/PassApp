@@ -1,20 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Strength Checker (AI-Powered)</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Checker (Enhanced)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Bootstrap CSS for improved styling -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
+<body class="container mt-5">
 
-    <input type="password" id="password" placeholder="Enter password">
-    <button id="checkBtn">Check Strength</button>
+  <h1 class="mb-4">Enhanced Password Strength Checker</h1>
+  <div class="form-group">
+    <label for="password">Enter Password:</label>
+    <div class="input-group">
+      <input type="password" id="password" class="form-control" placeholder="Enter password">
+      <div class="input-group-append">
+        <button id="toggleVisibility" class="btn btn-secondary" type="button">Show</button>
+      </div>
+    </div>
+  </div>
+  <button id="checkBtn" class="btn btn-primary mb-3">Check Strength</button>
 
-    <div id="result"></div>
-    <div id="ai-advice" style="margin-top: 20px; font-style: italic; color: #555;"></div>
+  <div id="result" class="mb-3"></div>
+  <div id="ai-advice" class="mb-3" style="font-style: italic; color: #555;"></div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <hr>
+  <h2>Generate a Secure Password</h2>
+  <div class="form-group">
+    <label for="passwordLength">Password Length:</label>
+    <input type="number" id="passwordLength" class="form-control" value="12" min="4">
+  </div>
+  <button id="generateBtn" class="btn btn-success mb-3">Generate Password</button>
+  <div id="generated-password" class="mb-3"></div>
 
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
