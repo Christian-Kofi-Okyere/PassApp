@@ -11,7 +11,7 @@
 <body class="container mt-5">
 
   <h1 class="mb-4">Enhanced Password Strength Checker</h1>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <label for="password">Enter Password:</label>
     <div class="input-group">
       <input type="password" id="password" class="form-control" placeholder="Enter password">
@@ -19,8 +19,17 @@
         <button id="toggleVisibility" class="btn btn-secondary" type="button">Show</button>
       </div>
     </div>
-  </div>
-  <button id="checkBtn" class="btn btn-primary mb-3">Check Strength</button>
+  </div> -->
+
+  <form id="passwordForm">
+    <div class="form-group">
+      <label for="password">Enter Password:</label>
+      <input type="password" id="password" class="form-control" placeholder="Enter password">
+    </div>
+    <button type="submit" id="checkBtn" class="btn btn-primary">Check Strength</button>
+  </form>
+  
+  <!-- <button id="checkBtn" class="btn btn-primary mb-3">Check Strength</button> -->
 
   <div id="result" class="mb-3"></div>
   <div id="ai-advice" class="mb-3" style="font-style: italic; color: #555;"></div>
